@@ -62,18 +62,13 @@ class UserManager {
       return true
     }
     
-    func userCount() -> Int {
+    var userCount: Int {
         return users.count
-    }
-    
-    
-    deinit {
-        users.removeAll()
     }
 }
 
 class AdminUser : UserManager {
-    func allUsers() -> [String] {
+    func listAllUsers() -> [String] {
         return  Array(users.keys)
     }
     
