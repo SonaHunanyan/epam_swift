@@ -2,7 +2,7 @@ class Person {
     let name: String
     let age: Int
     var isAdult: Bool {
-        return age > 18
+        return age >= 18
     }
     static let minAgeForEnrollment = 16
     
@@ -10,17 +10,17 @@ class Person {
         return "\(name) is \(age) years old."
     }()
     
-  required init(name: String, age: Int) {
+    required init(name: String, age: Int) {
         self.name = name
         self.age = age
     }
     
     convenience init?(name: String, age: Int, adult: Bool) {
         if adult && age < Person.minAgeForEnrollment {
-              return nil
-          }
+            return nil
+        }
         self.init(name: name, age: age)
-      }
+    }
 }
 
 
@@ -36,12 +36,15 @@ class Student: Person {
         return "ID: \(studentID.uppercased())"
     }
     
+    @MainActor
     required init(name: String, age: Int, studentID: String, major: String) {
         self.studentID = studentID
         self.major = major
         super.init(name: name, age: age)
+        Student.studentCount = Student.studentCount + 1
     }
     
+    @MainActor
     convenience init? (studentID: String, major: String, name: String){
         self.init(name: name, age: 16, studentID: studentID, major: major)
     }
@@ -63,9 +66,11 @@ class Professor: Person{
         return "\(name) - \(faculty)"
     }
     
+    @MainActor
     required init(faculty: String, name: String, age: Int) {
         self.faculty = faculty
         super.init(name: name, age: age)
+        Professor.professorCount = Professor.professorCount + 1
     }
     
     required init(name: String, age: Int) {
@@ -79,6 +84,6 @@ struct University{
     let location: String
     
     var description: String {
-        return "Name: \(name) location: \(location)"
+        return "University: \(name), located in \(location)"
     }
 }
