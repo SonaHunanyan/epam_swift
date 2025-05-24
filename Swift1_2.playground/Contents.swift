@@ -1,18 +1,21 @@
 func isBalancedParentheses(input: String) -> Bool {
     let filtered = input.filter({ $0 == "(" || $0 == ")" })
     
-    var openCount = 0
-    var closeCount = 0
+    var count = 0
     
     for i in filtered {
         if i == ")" {
-            closeCount = closeCount + 1
+            count = count - 1
         }
         else if i == "("
         {
-            openCount = openCount + 1
+            count = count + 1
+        }
+        if count < 0 {
+            return false
         }
     }
     
-    return openCount == closeCount
+    return count == 0
 }
+
