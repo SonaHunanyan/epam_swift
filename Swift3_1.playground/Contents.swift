@@ -4,48 +4,48 @@ protocol Borrowable {
     var borrowDate:  Date? {get set}
     var returnDate: Date? {get set}
     var isBorrowed: Bool {get set}
-    
-    mutating func checkIn()
-    func isOverdue() -> Bool
-    
 }
 
 
-class Item {
-    init(id: String, title: String, author: String) {
-        self.id = id
-        self.title = title
-        self.author = author
-    }
-    let id: String
-    let title: String
-    let author: String
-}
-
-
-class Book : Item, Borrowable{
-    override init(id: String, title: String, author: String) {
-        self.borrowDate = nil
-        self.returnDate = nil
-        self.isBorrowed = false
-        super.init(id: id, title: title, author: author)
-    }
-    
-    var borrowDate: Date?
-    var returnDate: Date?
-    var isBorrowed: Bool
-    
-    func checkIn() {
-        borrowDate = nil
-        returnDate = nil
-        isBorrowed = false
-    }
-    
+extension Borrowable{
     func isOverdue() -> Bool {
         if let returnDate = returnDate {
             return Date.now > returnDate
         }
         return false
+    }
+    
+    mutating func checkIn() {
+        self.borrowDate = nil
+        self.returnDate = nil
+        self.isBorrowed = false
+    }
+}
+
+
+class Item {
+    let id: String
+    let title: String
+    let author: String
+    
+    init(id: String, title: String, author: String) {
+        self.id = id
+        self.title = title
+        self.author = author
+    }
+}
+
+
+class Book : Item, Borrowable{
+    var borrowDate: Date?
+    var returnDate: Date?
+    var isBorrowed: Bool
+    
+    override init(id: String, title: String, author: String) {
+        self.borrowDate = nil
+        self.returnDate = nil
+        self.isBorrowed = false
+        super.init(id: id, title: title, author: author)
     }
 }
 
@@ -79,9 +79,3 @@ class Library {
         return borrowableItem as! Item
     }
 }
-
-
-
-
-
-
