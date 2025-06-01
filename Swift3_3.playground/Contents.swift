@@ -7,7 +7,7 @@ let books = [
 ]
 
 
-var discountedPrices: [Double] = books.compactMap( { book in
+let discountedPrices: [Double] = books.compactMap( { book in
     if let price = book["price"] as? Int{
         let doublePrice = Double(price)
         return doublePrice - doublePrice * 0.1
@@ -16,11 +16,16 @@ var discountedPrices: [Double] = books.compactMap( { book in
 })
 
 
-var booksPostedAfter2000: [String] = books.filter( { $0["year"] as! Int > 2000 } ).map( { $0["title"] as! String } )
+let booksPostedAfter2000: [String] = books.filter({ book in
+    if let year = book["year"] as? Int{
+        return year > 2000
+    }
+    return false
+}).compactMap({ $0["title"] as? String})
 
 
-var allGenres: Set<String> = Set(books.flatMap( { $0["genre"] as! [String] } ))
+let allGenres: Set<String> = Set(books.flatMap( { $0["genre"] as? [String] ?? [] } ))
 
-var totalCost: Int = books.compactMap( { $0["price"] as? Int} ).reduce(0, { $0 + $1 })
+let totalCost: Int = books.compactMap( { $0["price"] as? Int} ).reduce(0, { $0 + $1 })
 
 
