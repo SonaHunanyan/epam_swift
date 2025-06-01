@@ -1,18 +1,18 @@
 struct School{
+    var people: [Person] = []
+    
     enum SchoolRole {
         case student, teacher, administrator
     }
     
     class Person {
+        let name: String
+        let role: SchoolRole
         init(name: String, role: SchoolRole) {
             self.name = name
             self.role = role
         }
-        let name: String
-        let role: SchoolRole
     }
-    
-    var people: [Person] = []
     
     subscript(role: SchoolRole) -> [Person] {
         return people.filter({$0.role == role})
@@ -25,17 +25,16 @@ struct School{
 
 
 func countStudents(_ school: School) -> Int {
-    return school[School.SchoolRole.student].count
+    return school[.student].count
 }
 
 func countTeachers(_ school: School) -> Int {
-    return school[School.SchoolRole.teacher].count
+    return school[.teacher].count
 }
 
 func countAdministrators(_ school: School) -> Int {
-    return school[School.SchoolRole.administrator].count
+    return school[.administrator].count
 }
-
 
 
 
