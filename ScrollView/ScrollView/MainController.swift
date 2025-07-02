@@ -4,70 +4,67 @@
 //
 //  Created by Sona Hunanyan on 30.06.25.
 //
-
 import UIKit
 
 class MainController: UIViewController, UIScrollViewDelegate {
-    private let bigImageView = UIImageView(image: UIImage(named: "BigImage"))
     private let scrollView = UIScrollView()
-    
-    
+    private let bigImageView = UIImageView(image: UIImage(named: "BigImage"))
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        setup()
+        render()
+        renderImageView()
     }
-    
-    private func setup() {
+
+    private func render() {
         view.addSubview(scrollView)
-        scrollView.addSubview(bigImageView)
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        bigImageView.translatesAutoresizingMaskIntoConstraints = false
-        bigImageView.contentMode = .scaleAspectFit
-        scrollView.minimumZoomScale = 1
-        scrollView.maximumZoomScale = 10
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.isDirectionalLockEnabled = true
-        scrollView.alwaysBounceHorizontal = false
-        
         scrollView.delegate = self
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            bigImageView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-            bigImageView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-            bigImageView.centerXAnchor.constraint(equalTo: scrollView.frameLayoutGuide.centerXAnchor),
-            bigImageView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
-        centerImage()
+        scrollView.minimumZoomScale = 1.0
+        scrollView.maximumZoomScale = 4.0
+        scrollView.bounces = true
+        scrollView.alwaysBounceVertical = true
+        scrollView.alwaysBounceHorizontal = false
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.isScrollEnabled = true
+        scrollView.isDirectionalLockEnabled = true
     }
-    
-    
+    private func renderImageView() {
+        scrollView.addSubview(bigImageView)
+        bigImageView.contentMode = .scaleAspectFit
+        bigImageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            bigImageView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
+            bigImageView.centerYAnchor.constraint(equalTo: scrollView.centerYAnchor),
+            bigImageView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            bigImageView.heightAnchor.constraint(equalTo: scrollView.heightAnchor)
+        ])
+    }
+
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return bigImageView
     }
-    
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
         centerImage()
     }
-    
     private func centerImage() {
-        let screenSize = UIScreen.main.bounds
-        let screenWidth = screenSize.width - 40
-        let screenHeight = screenSize.height - 40
+        let scrollViewSize = scrollView.bounds.size
         let imageSize = bigImageView.frame.size
-        print(imageSize)
-        
-        let horizontalInset = (screenWidth -  imageSize.width) / 2
-        let verticalInset = (screenHeight - imageSize.height) / 2
-        
-        scrollView.contentInset = UIEdgeInsets(top: verticalInset,
-                                               left: horizontalInset,
-                                               bottom: verticalInset,
-                                               right: horizontalInset,
+        let verticalInset = max((scrollViewSize.height - imageSize.height) / 2, 0)
+        let horizontalInset = max((scrollViewSize.width - imageSize.width) / 2, 0)
+        scrollView.contentInset = UIEdgeInsets(
+            top: verticalInset,
+            left: horizontalInset,
+            bottom: verticalInset,
+            right: horizontalInset
         )
     }
 }
-
