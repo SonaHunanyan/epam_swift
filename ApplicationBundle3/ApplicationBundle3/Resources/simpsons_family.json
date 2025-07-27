@@ -1,0 +1,14 @@
+{
+    "family": [
+        { "name": "Homer Simpson", "age": 39, "relation": "Father",   "imageName": "homer"
+        },
+        { "name": "Marge Simpson", "age": 36, "relation": "Mother",   "imageName": "marge"
+        },
+        { "name": "Bart Simpson", "age": 10, "relation": "Son" ,   "imageName": "bart"
+        },
+        { "name": "Lisa Simpson", "age": 8, "relation": "Daughter",  "imageName": "lisa"
+        },
+        { "name": "Maggie Simpson", "age": 1, "relation": "Baby",   "imageName": "maggie"
+        }
+    ]
+}
