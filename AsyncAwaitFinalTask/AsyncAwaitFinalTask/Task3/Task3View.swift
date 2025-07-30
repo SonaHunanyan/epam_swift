@@ -50,17 +50,20 @@ class Task3API {
         case weak, strong, excellent, unknown
     }
     
+    private var continuation: AsyncStream<SignalStrenght>.Continuation?
+    
     func signalStrength() -> AsyncStream<SignalStrenght> {
         return AsyncStream { continuation in
-            Task {
-                try? await Task.sleep(for: .seconds(1))
-                continuation.yield(with: .success([SignalStrenght.weak, .strong, .excellent].randomElement() ?? .unknown))
+            self.continuation = continuation
+             Task {
+                    try? await Task.sleep(for: .seconds(1))
+                    continuation.yield(with: .success([SignalStrenght.weak, .strong, .excellent].randomElement() ?? .unknown))
             }
         }
     }
     
     func cancel() {
-        // ????
+        self.continuation?.finish()
     }
 }
 
