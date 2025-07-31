@@ -3,10 +3,14 @@ import UIKit
 class MainViewController: UIViewController {
 
     let textFormField = UITextField()
-    let saveButton = UIButton()
-    let loadButton = UIButton()
+    let saveButton = UIButton(type: .system)
+    let appendButton = UIButton(type: .system)
+    let loadButton = UIButton(type: .system)
     let filename = "storage.txt"
     let stackView = UIStackView()
+    let storedData = UILabel()
+    let resultStackView = UIStackView()
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,21 +30,48 @@ class MainViewController: UIViewController {
         loadButton.setTitle("Load", for: .normal)
         loadButton.setTitleColor(.systemBlue, for: .normal)
         loadButton.addTarget(self, action: #selector(read), for: .touchUpInside)
-        let buttonStack = UIStackView(arrangedSubviews: [saveButton, loadButton])
+        appendButton.setTitle("Append", for: .normal)
+        appendButton.setTitleColor(.systemBlue, for: .normal)
+        appendButton.addTarget(self, action: #selector(append), for: .touchUpInside)
+        let buttonStack = UIStackView(arrangedSubviews: [saveButton,appendButton, loadButton])
         buttonStack.axis = .horizontal
         buttonStack.spacing = 12
         buttonStack.distribution = .fillEqually
+        view.addSubview(stackView)
         stackView.axis = .vertical
         stackView.spacing = 16
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.addArrangedSubview(textFormField)
         stackView.addArrangedSubview(buttonStack)
-        view.addSubview(stackView)
+        setupResultBlock()
         NSLayoutConstraint.activate([
+            resultStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            resultStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            stackView.topAnchor.constraint(equalTo: resultStackView.bottomAnchor, constant: 16)
         ])
+    }
+    
+    private func setupResultBlock() {
+        let title = UILabel()
+        view.addSubview(resultStackView)
+        resultStackView.translatesAutoresizingMaskIntoConstraints = false
+        resultStackView.axis = .vertical
+        resultStackView.spacing = 16
+        resultStackView.addArrangedSubview(title)
+        resultStackView.addArrangedSubview(storedData)
+        storedData.font = .systemFont(ofSize: 14, weight: .medium)
+        storedData.textColor = .black
+        storedData.text = ""
+        title.font = .systemFont(ofSize: 17, weight: .medium)
+        title.textColor = .black
+        title.text = "Your stored data"
+    }
+
+    
+    private func updateLabel(_ text: String) {
+        storedData.text = text
     }
 
     @objc private func saveText() {
@@ -51,6 +82,22 @@ class MainViewController: UIViewController {
 
         do {
             try FileService.save(content: text, fileName: filename)
+            updateLabel(text)
+            showSnackbar(message: "Data saved", backgroundColor: .systemGreen)
+        } catch {
+            showSnackbar(message: "Fail to save data", backgroundColor: .systemRed)
+        }
+    }
+    
+    
+    @objc private func append() {
+        guard let text = textFormField.text, !text.isEmpty else {
+            showSnackbar(message: "Field is empty", backgroundColor: .systemOrange)
+            return
+        }
+        do {
+            try FileService.append(content: text, fileName: filename)
+            updateLabel(text)
             showSnackbar(message: "Data saved", backgroundColor: .systemGreen)
         } catch {
             showSnackbar(message: "Fail to save data", backgroundColor: .systemRed)
@@ -61,6 +108,7 @@ class MainViewController: UIViewController {
         do {
             let loadedText = try FileService.read(fileName: filename)
             textFormField.text = loadedText
+            updateLabel(loadedText)
             showSnackbar(message: "Data loaded", backgroundColor: .systemBlue)
         } catch {
             showSnackbar(message: "Fail to load data", backgroundColor: .systemRed)

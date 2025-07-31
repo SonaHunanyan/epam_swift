@@ -13,8 +13,8 @@ class FileService {
     }
     
     static func save(content: String, fileName: String) throws {
-       guard let deafultPath = defaultDirectory() else {
-           throw FileError.fileNotFound
+        guard let deafultPath = defaultDirectory() else {
+            throw FileError.fileNotFound
         }
         let path = deafultPath.appendingPathComponent(fileName)
         
@@ -38,11 +38,32 @@ class FileService {
             throw FileError.failToRead
         }
     }
+    
+    static func append(content: String, fileName: String) throws {
+        guard let defaultPath = defaultDirectory() else {
+            throw FileError.fileNotFound
+        }
+        let path = defaultPath.appendingPathComponent(fileName)
+        guard let data = (content).data(using: .utf8) else {
+            throw FileError.failToSave
+        }
+        do {
+            if let fileHandle = try? FileHandle(forWritingTo: path) {
+                fileHandle.seekToEndOfFile()
+                fileHandle.write(data)
+                fileHandle.closeFile()
+            } else {
+                throw FileError.failToSave
+            }
+        } catch {
+            throw FileError.failToSave
+        }
+    }
 }
 
 enum FileError: Error {
-  case  failToSave
-  case  failToRead
-  case fileNotFound
+    case  failToSave
+    case  failToRead
+    case fileNotFound
     
 }
