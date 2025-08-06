@@ -1,8 +1,8 @@
 import UIKit
 
-class MainViewController: UIViewController {
-    private let stackView = UIStackView()
-    private let scrollView = UIScrollView()
+class MainViewController: UIViewController, UITableViewDataSource {
+    private let tableView = UITableView()
+    private var images: [URL] = []
     
     private let clearCacheButton: UIButton = {
         let button = UIButton(type: .system)
@@ -17,79 +17,61 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        
-        let cachedImages = ImageCacheService.instance.loadCachedImages()
-        display(images: cachedImages)
+        loadData()
+    }
+    
+    private func loadData() {
+        images = ImageCacheService.instance.loadCachedImages()
+        tableView.reloadData()
         
         ImagesRepository.instance.getImages { urls in
-            var images: [UIImage] = []
-            let group = DispatchGroup()
-            for url in urls {
-                group.enter()
-                URLSession.shared.dataTask(with: url) { data, _, _ in
-                    defer { group.leave() }
-                    if let data = data {
-                        let image = UIImage(data: data)
-                        if let image = image {
-                            images.append(image)
-                            
-                        }
-                    }
-                }.resume()
+            self.images = urls
+            ImageCacheService.instance.cacheImages(images: urls)
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
             }
-            group.notify(queue: .main) {
-                self.display(images: images)
-                ImageCacheService.instance.cacheImages(images: urls)
-            }
-                
         }
     }
     
     private func setupUI() {
         view.backgroundColor = .white
         
-        stackView.axis = .vertical
-        stackView.spacing = 10
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(scrollView)
-        scrollView.addSubview(stackView)
-        
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 60))
+        clearCacheButton.frame = CGRect(x: 16, y: 8, width: view.frame.width - 32, height: 44)
+        clearCacheButton.addTarget(self, action: #selector(clearCacheTapped), for: .touchUpInside)
+        headerView.addSubview(clearCacheButton)
+        tableView.tableHeaderView = headerView
+        tableView.dataSource = self
+        tableView.register(ImageCellView.self, forCellReuseIdentifier: ImageCellView.identifier)
+        tableView.rowHeight = 200
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            
-            stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
-            
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
-        stackView.addArrangedSubview(clearCacheButton)
         clearCacheButton.addTarget(self, action: #selector(clearCacheTapped), for: .touchUpInside)
     }
-    
-    private func display(images: [UIImage]) {
-        DispatchQueue.main.async {
-            self.stackView.arrangedSubviews.dropFirst().forEach { $0.removeFromSuperview() }
-            
-            for image in images {
-                let imageView = UIImageView(image: image)
-                imageView.contentMode = .scaleAspectFit
-                imageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
-                self.stackView.addArrangedSubview(imageView)
-            }
-        }
-    }
-    
+        
     @objc private func clearCacheTapped() {
         ImageCacheService.instance.clearCache()
         showSnackbar(message: "Cache cleaned!", backgroundColor: .green)
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return images.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ImageCellView.identifier, for: indexPath) as? ImageCellView else {
+            return UITableViewCell()
+        }
+        let url = images[indexPath.row]
+        cell.configure(with: url)
+        return cell
     }
 }
 

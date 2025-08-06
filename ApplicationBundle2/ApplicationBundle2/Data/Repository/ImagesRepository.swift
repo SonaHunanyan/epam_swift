@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 class ImagesRepository {
     static let instance = ImagesRepository()
@@ -26,5 +27,21 @@ class ImagesRepository {
                 print(error)
             }
         }.resume()
+    }
+    
+    func loadImageFromUrl(_ url: URL, completion: @escaping (UIImage?)-> Void)  {
+        DispatchQueue.global().async {
+            guard let data = try? Data(contentsOf: url),
+                  let image = UIImage(data: data) else {
+                DispatchQueue.main.async{
+                    completion(nil)
+                }
+                return
+            }
+            DispatchQueue.main.async{
+                completion(image)
+            }
+        }
+         
     }
 }
