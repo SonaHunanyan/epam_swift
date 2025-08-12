@@ -1,13 +1,32 @@
-func isPalindrome(input: String) -> Bool {
-    let filtered = input.lowercased().filter ({ $0.isLetter })
+enum Theme: String {
+    case light =  "Light theme"
+    case dark = "Dark theme"
     
-    if filtered.isEmpty { return false }
-    
-    for i in 0...filtered.count/2{
-        let leftChar = filtered[filtered.index(filtered.startIndex, offsetBy: i)]
-        let rightChar = filtered[filtered.index(filtered.startIndex, offsetBy: filtered.count-1-i)]
-        if leftChar != rightChar { return false }
+    var description: String {
+         switch(self) {
+         case .light:
+             return "barev"
+         case .dark:
+             return "hajogh"
+         }
     }
-    
-    return true
 }
+
+
+let theme = Theme.dark
+print(theme.rawValue)
+
+
+
+switch(theme) {
+    
+case .light:
+    print("barev")
+    
+case .dark:
+    print("hajogh")
+}
+
+print(theme.description)
+
+
