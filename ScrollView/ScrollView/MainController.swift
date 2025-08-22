@@ -67,4 +67,7 @@ class MainController: UIViewController, UIScrollViewDelegate {
             right: horizontalInset
         )
     }
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+      //  centerImage()
+    }
 }
