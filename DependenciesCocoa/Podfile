@@ -1,0 +1,6 @@
+platform :ios, '15.0'
+use_frameworks!
+
+target 'Dependency_managers' do
+  pod 'SnapKit', '~> 5.7.1'
+end
