@@ -10,7 +10,7 @@ import SwiftUI
 
 struct HomeView: View {
     var body: some View {
-        TabView {
+        NavigationStack {    TabView {
             CitiesView()
                 .tabItem {
                     Label("Cities", systemImage: AppIcons.globeIcon)
@@ -23,6 +23,12 @@ struct HomeView: View {
                 .tabItem {
                     Label("Favorites", systemImage: AppIcons.favorites)
                 }
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                LanguageButton()
+            }
+        }
         }
     }
 }

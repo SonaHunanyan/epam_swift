@@ -9,9 +9,14 @@ import SwiftUI
 
 @main
 struct EpamFinalApp: App {
+    
+    @StateObject var languageManager = LanguageManager()
+    
     var body: some Scene {
         WindowGroup {
             HomeView()
+                .environmentObject(languageManager)
+                .environment(\.locale, .init(identifier: languageManager.appLanguage))
         }
     }
 }
