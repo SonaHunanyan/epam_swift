@@ -9,6 +9,6 @@ import SwiftUICore
 
 struct FavoritesView: View {
     var body: some View {
-        Text("Favorites")
+        Text(LocalizedStringKey(AppStrings.favorites))
     }
 }

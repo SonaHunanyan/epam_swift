@@ -10,28 +10,61 @@ import SwiftUI
 
 struct HomeView: View {
     var body: some View {
-        NavigationStack {    TabView {
-            CitiesView()
-                .tabItem {
-                    Label("Cities", systemImage: AppIcons.globeIcon)
+        NavigationStack {
+            TabView {
+                ForEach(NavBarItems.allCases, id: \.self) { item in
+                    item.view
+                        .tabItem {
+                            Label(LocalizedStringKey(item.title), systemImage: item.icon)
+                        }
                 }
-            ProfileView()
-                .tabItem {
-                    Label("Profile", systemImage: AppIcons.profileIcon)
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    LanguageButton()
                 }
-            FavoritesView()
-                .tabItem {
-                    Label("Favorites", systemImage: AppIcons.favorites)
-                }
-        }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                LanguageButton()
             }
         }
+     
+    }
+}
+
+extension NavBarItems {
+    var title: String {
+        switch self {
+        case .cities:
+            AppStrings.cities
+        case .favorites:
+            AppStrings.favorites
+        case .profile:
+            AppStrings.profile
+        }
+    }
+    
+    var icon: String {
+        switch self {
+        case .cities:
+            AppIcons.globeIcon
+        case .favorites:
+            AppIcons.favorites
+        case .profile:
+            AppIcons.profileIcon
+        }
+    }
+    
+    @ViewBuilder
+    var view: some View {
+        switch self {
+        case .cities:
+            CitiesView()
+        case .favorites:
+            FavoritesView()
+        case .profile:
+            ProfileView()
         }
     }
 }
+
 
 #Preview {
     HomeView()
