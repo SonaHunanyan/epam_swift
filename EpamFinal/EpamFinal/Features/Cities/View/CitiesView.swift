@@ -9,6 +9,6 @@ import SwiftUICore
 
 struct CitiesView: View {
     var body: some View {
-        Text("Cities")
+        Text("hello")
     }
 }
