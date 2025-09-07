@@ -7,15 +7,23 @@
 
 import SwiftUI
 
+
 struct HomeView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        TabView {
+            CitiesView()
+                .tabItem {
+                    Label("Cities", systemImage: AppIcons.globeIcon)
+                }
+            ProfileView()
+                .tabItem {
+                    Label("Profile", systemImage: AppIcons.profileIcon)
+                }
+            FavoritesView()
+                .tabItem {
+                    Label("Favorites", systemImage: AppIcons.favorites)
+                }
         }
-        .padding()
     }
 }
 

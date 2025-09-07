@@ -1,0 +1,4 @@
+API_BASE_URL = https://wft-geo-db.p.rapidapi.com/v1/
+API_KEY = 2962c6ffe2mshace3b04b9c4db28p16a402jsn0f5117fe8051
+HOST = wft-geo-db.p.rapidapi.com
+

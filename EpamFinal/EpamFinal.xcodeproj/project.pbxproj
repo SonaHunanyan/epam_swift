@@ -16,6 +16,11 @@
 			path = EpamFinal;
 			sourceTree = "<group>";
 		};
+		748D8C7E2E6DA0EB00F12F15 /* Config */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Config;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +37,7 @@
 		748D8C5E2E6D964D00F12F15 = {
 			isa = PBXGroup;
 			children = (
+				748D8C7E2E6DA0EB00F12F15 /* Config */,
 				748D8C692E6D964D00F12F15 /* EpamFinal */,
 				748D8C682E6D964D00F12F15 /* Products */,
 			);
@@ -62,6 +68,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				748D8C692E6D964D00F12F15 /* EpamFinal */,
+				748D8C7E2E6DA0EB00F12F15 /* Config */,
 			);
 			name = EpamFinal;
 			packageProductDependencies = (
