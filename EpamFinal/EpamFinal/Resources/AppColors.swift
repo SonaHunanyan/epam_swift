@@ -10,4 +10,5 @@ class AppColors {
     static let secondary = "SecondaryColor"
     static let yellow = "Yellow"
     static let white = "White"
+    static let grey = "Grey"
 }
